@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_animalcrossingplayer" default="compile.module.animalcrossingplayer">
+  <dirname property="module.animalcrossingplayer.basedir" file="${ant.file.module_animalcrossingplayer}"/>
+  
+  <property name="module.jdk.home.animalcrossingplayer" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.animalcrossingplayer" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.animalcrossingplayer" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.animalcrossingplayer" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="animalcrossingplayer.output.dir" value="${module.animalcrossingplayer.basedir}/out/production/AnimalCrossingPlayer"/>
+  <property name="animalcrossingplayer.testoutput.dir" value="${module.animalcrossingplayer.basedir}/out/test/AnimalCrossingPlayer"/>
+  
+  <path id="animalcrossingplayer.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="animalcrossingplayer.module.production.classpath">
+    <path refid="${module.jdk.classpath.animalcrossingplayer}"/>
+  </path>
+  
+  <path id="animalcrossingplayer.runtime.production.module.classpath">
+    <pathelement location="${animalcrossingplayer.output.dir}"/>
+  </path>
+  
+  <path id="animalcrossingplayer.module.classpath">
+    <path refid="${module.jdk.classpath.animalcrossingplayer}"/>
+    <pathelement location="${animalcrossingplayer.output.dir}"/>
+  </path>
+  
+  <path id="animalcrossingplayer.runtime.module.classpath">
+    <pathelement location="${animalcrossingplayer.testoutput.dir}"/>
+    <pathelement location="${animalcrossingplayer.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.animalcrossingplayer">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.animalcrossingplayer">
+    <patternset refid="excluded.from.module.animalcrossingplayer"/>
+  </patternset>
+  
+  <path id="animalcrossingplayer.module.sourcepath">
+    <dirset dir="${module.animalcrossingplayer.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.animalcrossingplayer" depends="compile.module.animalcrossingplayer.production,compile.module.animalcrossingplayer.tests" description="Compile module AnimalCrossingPlayer"/>
+  
+  <target name="compile.module.animalcrossingplayer.production" depends="register.custom.compilers" description="Compile module AnimalCrossingPlayer; production classes">
+    <mkdir dir="${animalcrossingplayer.output.dir}"/>
+    <javac2 destdir="${animalcrossingplayer.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.animalcrossingplayer}/javac">
+      <compilerarg line="${compiler.args.animalcrossingplayer}"/>
+      <bootclasspath refid="animalcrossingplayer.module.bootclasspath"/>
+      <classpath refid="animalcrossingplayer.module.production.classpath"/>
+      <src refid="animalcrossingplayer.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.animalcrossingplayer"/>
+    </javac2>
+    
+    <copy todir="${animalcrossingplayer.output.dir}">
+      <fileset dir="${module.animalcrossingplayer.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.animalcrossingplayer.tests" depends="register.custom.compilers,compile.module.animalcrossingplayer.production" description="compile module AnimalCrossingPlayer; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.animalcrossingplayer" description="cleanup module">
+    <delete dir="${animalcrossingplayer.output.dir}"/>
+    <delete dir="${animalcrossingplayer.testoutput.dir}"/>
+  </target>
+</project>

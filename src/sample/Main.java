@@ -5,9 +5,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
@@ -20,30 +17,43 @@ import java.io.File;
 public class Main extends Application {
 
 
-    private final int screenX = 350;
-    private final int screenY = 200;
-    private int toolbarOffset = 75;
-    private static String musicDir = ".\\AnimalCrossingSoundtrack";
+    private static final int screenX = 550;
+    private static final int screenY = 600;
+    private static final int toolbarOffset = 75;
+    private static String musicDir = "AnimalCrossingSoundtrack";
     private static Media song;
     private static MediaPlayer player;
     private static String curSong = null;
+    private static MediaControl root;
+    private static Stage primaryStage = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+
+        Main.primaryStage = primaryStage;
+
+        //Add timeline for updates every second
+        update(primaryStage);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000),ae -> update(primaryStage)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
+        root = new MediaControl(player);
         //Set Stage Location to bottom right
         primaryStage.setX(Screen.getMainScreen().getWidth() - screenX);
         primaryStage.setY(Screen.getMainScreen().getHeight() - screenY - toolbarOffset);
 
         //Show Scene
+        updateScene();
+
+    }
+
+    public static void updateScene(){
         Scene myScene = new Scene(root,screenX,screenY);
         primaryStage.setScene(myScene);
         primaryStage.show();
 
-        //Add timeline for updates every second
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000),ae -> update(primaryStage)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
     }
 
     public static void update(Stage stage){
@@ -113,9 +123,11 @@ public class Main extends Application {
                 player.stop();
             }
             player = new MediaPlayer(song);
+            root = new MediaControl(player);
             player.play();
             player.setCycleCount(MediaPlayer.INDEFINITE);
             curSong = songPath;
+            updateScene();
 
         }else{
             System.err.println("Path was null");
