@@ -23,7 +23,7 @@ import java.io.File;
 public class MediaControl extends BorderPane {
     private MediaPlayer mp;
     private MediaView mediaView;
-    private final boolean repeat = false;
+    private boolean repeat = false;
     private boolean stopRequested = false;
     private boolean atEndOfMedia = false;
     private Duration duration;
@@ -117,9 +117,17 @@ public class MediaControl extends BorderPane {
         mp.setOnEndOfMedia(new Runnable() {
             public void run() {
                 if (!repeat) {
+                    System.out.println("End of media, we are pausing...");
                     playButton.setText(">");
                     stopRequested = true;
                     atEndOfMedia = true;
+                }else{
+                    System.out.println("End of media, we are replaying...");
+                    mp.seek(Duration.ZERO);
+                    mp.play();
+                    playButton.setText("||");
+                    stopRequested = false;
+                    atEndOfMedia = false;
                 }
             }
         });
@@ -199,6 +207,18 @@ public class MediaControl extends BorderPane {
                 }
             });
         }
+    }
+
+    public void setRepeat(boolean r){
+        repeat = r;
+    }
+
+    public void play(){
+        mp.play();
+    }
+
+    public void stop(){
+        mp.stop();
     }
 
     private static String formatTime(Duration elapsed, Duration duration) {

@@ -39,7 +39,7 @@ public class Main extends Application {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
 
-        root = new MediaControl(player);
+
         //Set Stage Location to bottom right
         primaryStage.setX(Screen.getMainScreen().getWidth() - screenX);
         primaryStage.setY(Screen.getMainScreen().getHeight() - screenY - toolbarOffset);
@@ -50,6 +50,10 @@ public class Main extends Application {
     }
 
     public static void updateScene(){
+
+        if(root.getScene() != null){
+            return;
+        }
         Scene myScene = new Scene(root,screenX,screenY);
         primaryStage.setScene(myScene);
         primaryStage.show();
@@ -119,13 +123,13 @@ public class Main extends Application {
         //Play song if not null and place on loop
         if(songPath != null){
             song = new Media( new File(songPath).toURI().toString());
-            if(player != null){
-                player.stop();
+            if(root != null){
+                root.stop();
             }
-            player = new MediaPlayer(song);
-            root = new MediaControl(player);
-            player.play();
-            player.setCycleCount(MediaPlayer.INDEFINITE);
+
+            root = new MediaControl(new MediaPlayer(song));
+            root.play();
+            root.setRepeat(true);
             curSong = songPath;
             updateScene();
 
