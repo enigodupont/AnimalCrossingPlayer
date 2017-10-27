@@ -131,7 +131,7 @@
       <exclude name="AnimalCrossingPlayer.jar"/>
     </fx:fileset>
     <fx:fileset id="all_AnimalCrossingPlayer" dir="${artifact.temp.output.AnimalCrossingPlayer}" includes="**/*.jar"/>
-    <fx:application id="AnimalCrossingPlayer_id" name="AnimalCrossingPlayer" mainClass="sample.Main" version="1.0"/>
+    <fx:application id="AnimalCrossingPlayer_id" name="AnimalCrossingPlayer" mainClass="main.Main" version="1.0"/>
     <fx:jar destfile="${artifact.temp.output.AnimalCrossingPlayer}/AnimalCrossingPlayer.jar">
       <fx:application refid="AnimalCrossingPlayer_id"/>
       <fileset dir="${artifact.temp.output.AnimalCrossingPlayer}" excludes="**/*.jar"/>

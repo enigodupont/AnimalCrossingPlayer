@@ -3,9 +3,14 @@
     <output-path>$PROJECT_DIR$/out/artifacts/AnimalCrossingPlayer</output-path>
     <properties id="javafx-properties">
       <options>
-        <option name="appClass" value="sample.Main" />
+        <option name="appClass" value="main.Main" />
         <option name="description" value="Emulates Animal Crossing Real Time OST" />
         <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="windowsIcon" value="$PROJECT_DIR$/favicon.ico" />
+          </JavaFxApplicationIcons>
+        </option>
         <option name="title" value="Animal Crossing Player" />
         <option name="vendor" value="TheOldApplications" />
         <option name="version" value="1.0" />

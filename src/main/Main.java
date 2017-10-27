@@ -1,4 +1,4 @@
-package sample;
+package main;
 
 import com.sun.glass.ui.Screen;
 import javafx.animation.Animation;
@@ -11,27 +11,35 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.Date;
 import java.io.File;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Main extends Application {
 
 
-    private static final int screenX = 550;
-    private static final int screenY = 600;
-    private static final int toolbarOffset = 75;
-    private static String musicDir = "AnimalCrossingSoundtrack";
-    private static Media song;
-    private static MediaPlayer player;
-    private static String curSong = null;
-    private static MediaControl root;
-    private static Stage primaryStage = null;
+    private final int screenX = 550;
+    private final int screenY = 600;
+    private final int toolbarOffset = 75;
+    private String musicDir = "AnimalCrossingSoundtrack";
+    private Boolean Snow = false;
+    private Boolean Rain = false;
+    private Media song;
+    private MediaPlayer player;
+    private String curSong = null;
+    private String curSongTitle = null;
+    private MediaControl root;
+    private Stage primaryStage = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-
-        Main.primaryStage = primaryStage;
+        this.primaryStage = primaryStage;
 
         //Add timeline for updates every second
         update(primaryStage);
@@ -49,7 +57,7 @@ public class Main extends Application {
 
     }
 
-    public static void updateScene(){
+    private void updateScene(){
 
         if(root.getScene() != null){
             return;
@@ -60,17 +68,16 @@ public class Main extends Application {
 
     }
 
-    public static void update(Stage stage){
-        Date curDate = new Date();
-        stage.setTitle("Animal Crossing Player - " + getMediaFromDate(null));
+    private void update(Stage stage){
         playMedia(getMediaFromDate(null));
+        stage.setTitle("Animal Crossing Player - " + curSongTitle);
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public static String getMediaFromDate(Date date){
+    private String getMediaFromDate(Date date){
 
         if(date == null){
             date = new Date();
@@ -94,8 +101,7 @@ public class Main extends Application {
 
     }
 
-    public static void playMedia(String mediaName){
-
+    private void playMedia(String mediaName){
         File musDir = new File(musicDir);
 
         if(!musDir.isDirectory()){
@@ -103,20 +109,34 @@ public class Main extends Application {
             System.exit(-1);
         }
 
+
         //Within the music directory find the first match for our song.
         String songPath = null;
+        File lastFile = new File("Nothing");
         for(File f : musDir.listFiles()){
             if(f.isFile()){
                 if(f.getName().contains(mediaName)){
-                    songPath = f.getAbsolutePath();
-                    break;
+                    //Base name off of
+                    if(Rain && f.getName().contains("Rain")){
+                        songPath = f.getAbsolutePath();
+                    }else if(Snow && f.getName().contains("Snow")){
+                        songPath = f.getAbsolutePath();
+                    }else if(!Rain && !Snow && ! f.getName().contains("Rain") && ! f.getName().contains("Snow")){
+                        songPath = f.getAbsolutePath();
+                    }
+
+                    if(songPath != null){
+                        lastFile = f;
+                        curSongTitle = lastFile.getName();
+                        break;
+                    }
                 }
             }
         }
 
         //If the song is the same, leave it alone
         if(curSong != null && curSong.equals(songPath)){
-            System.out.println("Same song, do nothin...");
+            System.out.println("Same song " + lastFile.getName() + ", do nothin...");
             return;
         }
 
