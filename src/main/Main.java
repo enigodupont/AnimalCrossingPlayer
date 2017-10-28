@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.io.File;
+import java.util.Random;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -24,16 +25,19 @@ import java.util.zip.ZipInputStream;
 public class Main extends Application {
 
 
-    private final int screenX = 550;
+    private final int screenX = 650;
     private final int screenY = 600;
     private final int toolbarOffset = 75;
     private String musicDir = "AnimalCrossingSoundtrack";
     private Boolean Snow = false;
     private Boolean Rain = false;
+    private Boolean specialSong = false;
+    private Boolean specialSongPlaying = false;
     private Media song;
     private MediaPlayer player;
     private String curSong = null;
     private String curSongTitle = null;
+    private String previousSongTitle = null;
     private MediaControl root;
     private Stage primaryStage = null;
 
@@ -97,11 +101,26 @@ public class Main extends Application {
                 mediaName = Integer.toString(currentHour) + " AM";
         }
 
+        Random rand = new Random();
+        rand.setSeed(date.getTime());
+        if((rand.nextInt() % 1000) > 995){
+            System.out.println("Random SONG ");
+            mediaName = "Roost";
+            specialSong = true;
+        }
+
         return mediaName;
 
     }
 
     private void playMedia(String mediaName){
+
+        if(specialSong && specialSongPlaying && root != null && root.isStopped()){
+            specialSong = specialSongPlaying = false;
+        }else if(specialSong && specialSongPlaying && root != null && !root.isStopped()){
+            return;
+        }
+
         File musDir = new File(musicDir);
 
         if(!musDir.isDirectory()){
@@ -127,6 +146,7 @@ public class Main extends Application {
 
                     if(songPath != null){
                         lastFile = f;
+                        previousSongTitle = curSongTitle;
                         curSongTitle = lastFile.getName();
                         break;
                     }
@@ -140,6 +160,8 @@ public class Main extends Application {
             return;
         }
 
+        if(previousSongTitle != null) System.out.println("Changing song from " + previousSongTitle + ", to " + curSongTitle);
+
         //Play song if not null and place on loop
         if(songPath != null){
             song = new Media( new File(songPath).toURI().toString());
@@ -147,14 +169,34 @@ public class Main extends Application {
                 root.stop();
             }
 
-            root = new MediaControl(new MediaPlayer(song));
+            root = new MediaControl(new MediaPlayer(song),this);
             root.play();
-            root.setRepeat(true);
+            if(!specialSong){
+                root.setRepeat(true);
+            }else{
+                specialSongPlaying = true;
+            }
             curSong = songPath;
             updateScene();
 
         }else{
             System.err.println("Path was null");
         }
+    }
+
+    public void setRain(Boolean b){
+        Rain = b;
+    }
+
+    public void setSnow(Boolean b){
+        Snow = b;
+    }
+
+    public Boolean getRain(){
+        return Rain;
+    }
+
+    public Boolean getSnow(){
+        return Snow;
     }
 }

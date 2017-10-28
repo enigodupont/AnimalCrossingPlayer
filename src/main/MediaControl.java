@@ -1,11 +1,14 @@
 package main;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
@@ -32,8 +35,10 @@ public class MediaControl extends BorderPane {
     private Slider volumeSlider;
     private HBox mediaBar;
     private String imageBG = "background_image.jpg";
+    private Main parent;
 
-    public MediaControl(final MediaPlayer mp) {
+    public MediaControl(final MediaPlayer mp, Main p) {
+        parent = p;
         this.mp = mp;
         mediaView = new MediaView(mp);
         Pane mvPane = new Pane();
@@ -165,6 +170,46 @@ public class MediaControl extends BorderPane {
         playTime.setMinWidth(50);
         mediaBar.getChildren().add(playTime);
 
+        CheckBox rain = new CheckBox("Raining: ");
+        if(parent.getRain()) rain.setSelected(true);
+        CheckBox snow = new CheckBox("Snowing: ");
+        if(parent.getSnow()) snow.setSelected(true);
+
+        rain.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(snow.isSelected()){
+                    snow.setSelected(false);
+                    parent.setSnow(false);
+                    parent.setRain(true);
+                }else if(!rain.isSelected() && !snow.isSelected()){
+                    parent.setSnow(false);
+                    parent.setRain(false);
+                }else{
+                    parent.setRain(true);
+                }
+            }
+        });
+
+        snow.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(rain.isSelected()){
+                    rain.setSelected(false);
+                    parent.setRain(false);
+                    parent.setSnow(true);
+                }else if(!rain.isSelected() && !snow.isSelected()){
+                    parent.setSnow(false);
+                    parent.setRain(false);
+                }else {
+                    parent.setSnow(true);
+                }
+            }
+        });
+
+        mediaBar.getChildren().add(rain);
+        mediaBar.getChildren().add(snow);
+
         // Add the volume label
         Label volumeLabel = new Label("Vol: ");
         mediaBar.getChildren().add(volumeLabel);
@@ -220,6 +265,9 @@ public class MediaControl extends BorderPane {
         mp.stop();
     }
 
+    public Boolean isStopped(){
+        return mp.getStatus().equals(Status.STOPPED) | mp.getStatus().equals(Status.HALTED) | mp.getStatus().equals(Status.PAUSED);
+    }
     private static String formatTime(Duration elapsed, Duration duration) {
         int intElapsed = (int)Math.floor(elapsed.toSeconds());
         int elapsedHours = intElapsed / (60 * 60);
