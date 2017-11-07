@@ -266,7 +266,7 @@ public class MediaControl extends BorderPane {
     }
 
     public Boolean isStopped(){
-        return mp.getStatus().equals(Status.STOPPED) | mp.getStatus().equals(Status.HALTED) | mp.getStatus().equals(Status.PAUSED);
+        return stopRequested || atEndOfMedia;
     }
     private static String formatTime(Duration elapsed, Duration duration) {
         int intElapsed = (int)Math.floor(elapsed.toSeconds());
