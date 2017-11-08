@@ -28,7 +28,7 @@ public class Main extends Application {
     private final int screenX = 650;
     private final int screenY = 600;
     private final int toolbarOffset = 75;
-    private final double randomChance = .10;
+    private final double randomChance = 7;
     private String musicDir = "AnimalCrossingSoundtrack";
     private String randomSongs[] = {"Roost","Museum - Entrance","Nooks Cranny","Town Gate"};
     private Boolean Snow = false;
@@ -102,7 +102,7 @@ public class Main extends Application {
                 mediaName = Integer.toString(currentHour) + " AM";
         }
 
-        if((Math.random()) < randomChance){
+        if((Math.random() * 100) < randomChance){
             System.out.println("Random SONG ");
             mediaName = randomSongs[(new Random()).nextInt(randomSongs.length)];
             specialSong = true;
