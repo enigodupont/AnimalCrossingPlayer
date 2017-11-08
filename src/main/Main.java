@@ -28,7 +28,7 @@ public class Main extends Application {
     private final int screenX = 650;
     private final int screenY = 600;
     private final int toolbarOffset = 75;
-    private final double randomChance = 7;
+    private final double randomChance = 3.5;
     private String musicDir = "AnimalCrossingSoundtrack";
     private String randomSongs[] = {"Roost","Museum - Entrance","Nooks Cranny","Town Gate"};
     private Boolean Snow = false;
