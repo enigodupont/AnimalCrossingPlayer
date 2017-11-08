@@ -28,13 +28,14 @@ public class Main extends Application {
     private final int screenX = 650;
     private final int screenY = 600;
     private final int toolbarOffset = 75;
+    private final double randomChance = .10;
     private String musicDir = "AnimalCrossingSoundtrack";
+    private String randomSongs[] = {"Roost","Museum - Entrance","Nooks Cranny","Town Gate"};
     private Boolean Snow = false;
     private Boolean Rain = false;
     private Boolean specialSong = false;
     private Boolean specialSongPlaying = false;
     private Media song;
-    private MediaPlayer player;
     private String curSong = null;
     private String curSongTitle = null;
     private String previousSongTitle = null;
@@ -101,11 +102,9 @@ public class Main extends Application {
                 mediaName = Integer.toString(currentHour) + " AM";
         }
 
-        Random rand = new Random();
-        rand.setSeed(date.getTime());
-        if((rand.nextInt() % 1000) > 995){
+        if((Math.random()) < randomChance){
             System.out.println("Random SONG ");
-            mediaName = "Roost";
+            mediaName = randomSongs[(new Random()).nextInt(randomSongs.length)];
             specialSong = true;
         }
 
