@@ -170,10 +170,19 @@ public class MediaControl extends BorderPane {
         playTime.setMinWidth(50);
         mediaBar.getChildren().add(playTime);
 
+        CheckBox random = new CheckBox("Random: ");
+        if(parent.getRandom()) random.setSelected(true);
         CheckBox rain = new CheckBox("Raining: ");
         if(parent.getRain()) rain.setSelected(true);
         CheckBox snow = new CheckBox("Snowing: ");
         if(parent.getSnow()) snow.setSelected(true);
+
+        random.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                parent.setRandom(newValue);
+            }
+        });
 
         rain.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -207,6 +216,7 @@ public class MediaControl extends BorderPane {
             }
         });
 
+        mediaBar.getChildren().add(random);
         mediaBar.getChildren().add(rain);
         mediaBar.getChildren().add(snow);
 

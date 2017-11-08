@@ -11,28 +11,21 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.Date;
 import java.io.File;
 import java.util.Random;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class Main extends Application {
 
-
-    private final int screenX = 650;
-    private final int screenY = 600;
+    private final int screenX = 700;
+    private final int screenY = 650;
     private final int toolbarOffset = 75;
     private final double randomChance = 3.5;
     private String musicDir = "AnimalCrossingSoundtrack";
     private String randomSongs[] = {"Roost","Museum - Entrance","Nooks Cranny","Town Gate"};
     private Boolean Snow = false;
     private Boolean Rain = false;
+    private Boolean Random = true;
     private Boolean specialSong = false;
     private Boolean specialSongPlaying = false;
     private Media song;
@@ -102,7 +95,7 @@ public class Main extends Application {
                 mediaName = Integer.toString(currentHour) + " AM";
         }
 
-        if((Math.random() * 100) < randomChance){
+        if( Random && ((Math.random() * 100) < randomChance)){
             System.out.println("Random SONG ");
             mediaName = randomSongs[(new Random()).nextInt(randomSongs.length)];
             specialSong = true;
@@ -191,11 +184,19 @@ public class Main extends Application {
         Snow = b;
     }
 
+    public void setRandom(Boolean b){
+        Random = b;
+    }
+
     public Boolean getRain(){
         return Rain;
     }
 
     public Boolean getSnow(){
         return Snow;
+    }
+
+    public Boolean getRandom(){
+        return Random;
     }
 }
