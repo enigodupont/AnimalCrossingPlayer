@@ -20,7 +20,7 @@ public class Main extends Application {
     private final int screenX = 700;
     private final int screenY = 650;
     private final int toolbarOffset = 75;
-    private final double randomChance = 3.5;
+    private final double randomChance = 25;
     private String musicDir = "AnimalCrossingSoundtrack";
     private String randomSongs[] = {"Roost","Museum - Entrance","Nooks Cranny","Town Gate"};
     private Boolean Snow = false;
@@ -95,11 +95,17 @@ public class Main extends Application {
                 mediaName = Integer.toString(currentHour) + " AM";
         }
 
-        if( Random && ((Math.random() * 100) < randomChance)){
-            System.out.println("Random SONG ");
-            mediaName = randomSongs[(new Random()).nextInt(randomSongs.length)];
-            specialSong = true;
+        //Change the song based on a percentage, but only if the current song is stopped.
+        if(Random && root != null && root.isStopped()){
+            double chance = Math.random() * 100;
+            System.out.println("Checking Chance: " + chance);
+            if( chance < randomChance){
+                System.out.println("Random SONG ");
+                mediaName = randomSongs[(new Random()).nextInt(randomSongs.length)];
+                specialSong = true;
+            }
         }
+
 
         return mediaName;
 
@@ -108,8 +114,10 @@ public class Main extends Application {
     private void playMedia(String mediaName){
 
         if(specialSong && specialSongPlaying && root != null && root.isStopped()){
+            //Even though a special song was playing, it's stopped so let's turn it off.
             specialSong = specialSongPlaying = false;
         }else if(specialSong && specialSongPlaying && root != null && !root.isStopped()){
+            //If it hasn't finished let it keep going...
             return;
         }
 
@@ -148,6 +156,10 @@ public class Main extends Application {
 
         //If the song is the same, leave it alone
         if(curSong != null && curSong.equals(songPath)){
+            //Unless it's stopped
+            if(root.isStopped()){
+                root.play();
+            }
             System.out.println("Same song " + lastFile.getName() + ", do nothin...");
             return;
         }

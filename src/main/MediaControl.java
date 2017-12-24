@@ -120,19 +120,11 @@ public class MediaControl extends BorderPane {
         mp.setCycleCount(repeat ? MediaPlayer.INDEFINITE : 1);
         mp.setOnEndOfMedia(new Runnable() {
             public void run() {
-                if (!repeat) {
-                    System.out.println("End of media, we are pausing...");
-                    playButton.setText(">");
-                    stopRequested = true;
-                    atEndOfMedia = true;
-                }else{
-                    System.out.println("End of media, we are replaying...");
-                    mp.seek(Duration.ZERO);
-                    mp.play();
-                    playButton.setText("||");
-                    stopRequested = false;
-                    atEndOfMedia = false;
-                }
+                System.out.println("End of media, we are pausing...");
+                playButton.setText(">");
+                stopRequested = true;
+                atEndOfMedia = true;
+
             }
         });
 
